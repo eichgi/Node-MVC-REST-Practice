@@ -1,0 +1,119 @@
+doctype html
+html(lang="es")
+    head
+        include head.pug
+    body
+        include nav.pug
+        .row(style="margin-top: 5em")
+            .col-sm-10.col-sm-offset-1
+                if(tipo === 'Curso')
+                    #panel-curso.panel.panel-default
+                        .panel-heading
+                            .panel-title
+                                h2 Modificar curso
+                        .panel-body
+                            form#actualizarCurso(style="margin-bottom: 1em" method="post" action="/actualizar")
+                                .form-group
+                                    label Nombre:
+                                    input(type="text" class="form-control" name="nombre" value=data[0].nombre)
+                                .form-group
+                                    label Lenguaje:
+                                    input(type="text" class="form-control" name="lenguaje" value=data[0].lenguaje)
+                                .form-group
+                                    label Costo:
+                                    input(type="number" step="any" class="form-control" name="costo" value=data[0].costo)
+                                input(type="hidden" name="accion" value="actualizarCurso")
+                                input(type="hidden" name="_method" value="PUT")
+                                input(type="hidden" name="id" value=data[0].id)
+                                button(type="submit" class="btn btn-default btn-success") Actualizar curso
+                            #alertaCurso.alert(style="display:none",role="alert")
+                else if(tipo === 'Usuario')
+                    #panel-usuario.panel.panel-default
+                        .panel-heading
+                            .panel-title
+                                h2 Modificar Usuario
+                        .panel-body
+                            form#actualizarUsuario(style="margin-bottom: 1em" method="post" action="/actualizar")
+                                .form-group
+                                    label Nombre:
+                                    input(type="text" class="form-control" name="nombre" value=data[0].nombre required)
+                                .form-group
+                                    label Apellido:
+                                    input(type="text" class="form-control" name="apellido" value=data[0].apellido required)
+                                .form-group
+                                    label Edad:
+                                    input(type="number" step="any" class="form-control" name="edad" value=data[0].edad required)
+                                input(type="hidden" name="accion" value="actualizarUsuario")
+                                input(type="hidden" name="_method" value="PUT")
+                                input(type="hidden" name="id" value=data[0].id)
+                                button(type="submit" class="btn btn-default btn-success") Actualizar usuario
+                            #alertaUsuario.alert(style="display:none" role="alert")
+        include foot.pug
+        script(src="js/jquery-3.1.1.js")
+        script(src="js/bootstrap.min.js")
+        script.
+            var apiUrl = '/api';
+            var buscar = window.location.search.split('&');
+            var id = buscar[0].substr(1).split('=')[1];
+            var tipo = buscar[1].split('=')[1];
+            //$('#panel-usuario input[name=id]').val(id);
+            //$('#panel-curso input[name=id]').val(id);
+            var data = {
+                accion: 'obtener' + tipo,
+                id: id
+            };
+
+            var ajaxCurso = function () {
+                $.get(apiUrl, data, function (response) {
+                    //console.log(response);
+                    $('#actualizarCurso input[name=nombre]').val(response.nombre);
+                    $('#actualizarCurso input[name=lenguaje]').val(response.lenguaje);
+                    $('#actualizarCurso input[name=costo]').val(response.costo);
+                }, 'json');
+                $('#panel-curso').show();
+            };
+
+            var ajaxUsuario = function () {
+                $.get(apiUrl, data, function (response) {
+                    //console.log(response);
+                    $('#actualizarUsuario input[name=nombre]').val(response.nombre);
+                    $('#actualizarUsuario input[name=apellido]').val(response.apellido);
+                    $('#actualizarUsuario input[name=edad]').val(response.edad);
+                }, 'json');
+                $('#panel-usuario').show();
+            };
+
+            if (data.accion == 'obtenerCurso') {
+                //ajaxCurso();
+            } else if (data.accion == 'obtenerUsuario') {
+                //ajaxUsuario();
+            } else {
+                alert('Petición incorrecta');
+            }
+
+            /*$('#actualizarCurso').on('submit', function (e) {
+             e.preventDefault();
+             var form = new FormData(this);
+             form.append('id', id);
+             $.ajax({
+             url: apiUrl,
+             type: "POST",
+             data: form,
+             contentType: false,
+             cache: false,
+             processData: false,
+             dataType: 'json',
+             success: function (response) {
+             if (response.status == 'OK') {
+             $('#alertaCurso').addClass('alert-success').html('<p>Actualizacion exitosa</p>').show('400');
+             } else {
+             $('#alertaCurso').addClass('alert-danger').html('<p>Ocurrio un problema</p>').show('400');
+             }
+             setTimeout(function () {
+             $('#alertaCurso').hide('400');
+             window.location.href = 'index.php';
+             }, 3000);
+             }
+             });
+             });*/
+

@@ -1,0 +1,24 @@
+{
+  "name": "basic-crud",
+  "version": "1.0.0",
+  "description": "This is a basic MVC Crud with MySQL",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "supervisor server.js"
+  },
+  "author": "Hiram Guerrero",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "express-method-override": "0.0.3",
+    "morgan": "^1.7.0",
+    "mysql": "^2.11.1",
+    "pug": "^2.0.0-beta6",
+    "serve-favicon": "^2.3.0"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "supervisor": "^0.11.0"
+  }
+}

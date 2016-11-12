@@ -1,0 +1,163 @@
+doctype html
+html(lang="es")
+    head
+        include head.pug
+    body
+        include nav.pug
+        .row(style="margin-top: 5em")
+            .col-xs-12
+                .col-sm-10.col-sm-offset-1
+                    .panel.panel-default
+                        .panel-heading
+                            .panel-title.text-center
+                                h2 Usuarios
+                        .panel-body
+                            table#tablaUsuarios.table.table-striped.table-responsive.table-bordered.table-hover
+                                thead
+                                th ID
+                                th NOMBRE
+                                th EDAD
+                                th ACCIONES
+                                tbody
+                                    each dato in data.usuarios
+                                        tr
+                                            td #{dato.id}
+                                            td #{dato.nombre + ' ' + dato.apellido}
+                                            td #{dato.edad}
+                                            td
+                                                span.acciones
+                                                    a(href="modificar?id=" + dato.id + "&tipo=Usuario")
+                                                        i.fa.fa-edit
+                                                    a(href='#' class='eliminarUsuario' data-id=dato.id)
+                                                        i.fa.fa-times
+                .col-sm-10.col-sm-offset-1
+                    .panel.panel-default
+                        .panel-heading
+                            .panel-title.text-center
+                                h2 Cursos
+                        .panel-body
+                            table#tablaCursos.table.table-striped.table-responsive.table-bordered.table-hover
+                                thead
+                                th NOMBRE
+                                th LENGUAJE
+                                th COSTO
+                                th ACCIONES
+                                tbody
+                                    each curso in data.cursos
+                                        tr
+                                            td #{curso.nombre}
+                                            td #{curso.lenguaje}
+                                            td #{curso.costo}
+                                            td
+                                                span.acciones
+                                                    a(href="modificar?id=" + curso.id + "&tipo=Curso")
+                                                        i.fa.fa-edit
+                                                    a(href='#' class='eliminarCurso' data-id=curso.id)
+                                                        i.fa.fa-times
+        include foot.pug
+        script(src="js/jquery-3.1.1.js")
+        script(src="js/bootstrap.min.js")
+        script.
+            var apiUrl = '/api';
+
+            $('#tablaCursos').on('click', '.eliminarCurso', function (e) {
+                e.preventDefault();
+                if (confirm('¿Deseas eliminar este curso?')) {
+                    eliminarCurso($(this).data('id'));
+                }
+            });
+
+            $('#tablaUsuarios').on('click', '.eliminarUsuario', function (e) {
+                e.preventDefault();
+                if (confirm('¿Deseas eliminar este usuario?')) {
+                    eliminarUsuario($(this).data('id'));
+                }
+            });
+
+            var eliminarCurso = function (id) {
+                var data = {
+                    accion: 'eliminarCurso',
+                    id: id
+                };
+                $.ajax({
+                    url: '/eliminar',
+                    type: "DELETE",
+                    data: data,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status == "OK") {
+                            window.location.reload();
+                        }
+                    }
+                });
+                /*$.get(apiUrl, data, function (response) {
+                    if (response.status == "OK") {
+                        window.location.reload();
+                    }
+                }, 'json');*/
+            };
+
+            var eliminarUsuario = function (id) {
+                var data = {
+                    accion: 'eliminarUsuario',
+                    id: id
+                };
+                $.ajax({
+                    url: '/eliminar',
+                    type: "DELETE",
+                    data: data,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.status == "OK") {
+                            window.location.reload();
+                        }
+                    }
+                });
+                /*$.delete(apiUrl, data, function (response) {
+                 if (response.status == "OK") {
+                 window.location.reload();
+                 }
+                 }, 'json');*/
+            };
+
+            var mostrarUsuarios = function () {
+                $.get('/api', {accion: 'mostrarUsuarios'}, function (response) {
+                    //console.log(response);
+                    if (response.status == "OK") {
+                        response.datos.forEach(function (item) {
+                            $('#tablaUsuarios').append('<tr>' +
+                                    '<td>' + item.id + '</td>' +
+                                    '<td>' + item.nombre + ' ' + item.apellido + '</td>' +
+                                    '<td>' + item.edad + '</td>' +
+                                    '<td><span class="acciones">' +
+                                    '<a href="modificar?id=' + item.id + '&tipo=Usuario"><i class="fa fa-edit"></i></a>' +
+                                    '<a href="#" class="eliminarUsuario" data-id="' + item.id + '"><i class="fa fa-times"></i></a>' +
+                                    '</span></td>' +
+                                    '</tr>');
+                        });
+                    }
+                }, 'json');
+            };
+
+            var mostrarCursos = function () {
+                $.get('/api', {accion: 'mostrarCursos'}, function (response) {
+                    //console.log(response);
+                    if (response.status == "OK") {
+                        response.datos.forEach(function (item) {
+                            $('#tablaCursos').append('<tr>' +
+                                    '<td>' + item.nombre + '</td>' +
+                                    '<td>' + item.lenguaje + '</td>' +
+                                    '<td>' + item.costo + '</td>' +
+                                    '<td><span class="acciones">' +
+                                    '<a href="modificar?id=' + item.id + '&tipo=Curso"><i class="fa fa-edit"></i></a>' +
+                                    '<a href="#" class="eliminarCurso" data-id="' + item.id + '"><i class="fa fa-times"></i></a>' +
+                                    '</span></td>' +
+                                    '</tr>');
+                        });
+                    }
+                }, 'json');
+            };
+
+
+            //mostrarUsuarios();
+            //mostrarCursos();

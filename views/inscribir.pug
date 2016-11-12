@@ -1,0 +1,100 @@
+doctype html
+html(lang="es")
+    head
+        include head.pug
+    body
+        include nav.pug
+        .row(style="margin-top: 5em")
+            .col-sm-10.col-sm-offset-1
+                .panel.panel-default
+                    .panel-heading
+                        .panel-title
+                            h2 Inscribir Usuario
+                    .panel-body
+                        form#inscripcion(style="margin-bottom: 1em")
+                            .form-group
+                                label Usuario:
+                                select(type="text" class="form-control" name="id_usuario" required)
+                                    if(data.cursos.length > 0)
+                                        each curso in data.cursos
+                                            option(value=curso.id) #{curso.nombre}
+                                    else
+                                        option No hay cursos
+                            .form-group
+                                label Curso:
+                                select(type="text" class="form-control" name="id_curso" required)
+                                    if(data.usuarios.length > 0)
+                                        each usuario in data.usuarios
+                                            option(value=usuario.id) #{usuario.nombre + ' ' + usuario.apellido}
+                                    else
+                                        option No hay usuarios
+                            input(type="hidden" name="accion" value="inscribirUsuarioACurso")
+                            button(type="submit" class="btn btn-default btn-success") Inscribir usuario
+                        #alertaUsuario(style="display:none" role="alert")
+        include foot.pug
+        script(src="js/jquery-3.1.1.js")
+        script(src="js/bootstrap.min.js")
+        script.
+            var apiUrl = '/api';
+
+            var cargarDatos = function () {
+                var data = {
+                    accion: 'obtenerDatosParaInscripcion',
+                };
+                $.get(apiUrl, data, function (response) {
+                    if (response.status == "OK") {
+                        var usuarios = response.usuarios;
+                        usuarios.forEach(function (item) {
+                            $(':input[name=id_usuario]').append('<option value="' + item.id + '">' + item.nombre + ' ' + item.apellido + '</option>');
+                        });
+                        var cursos = response.cursos;
+                        cursos.forEach(function (item) {
+                            $(':input[name=id_curso]').append('<option value="' + item.id + '">' + item.nombre + ' - ' + item.lenguaje + '</option>');
+                        });
+                    }
+                }, 'json');
+            };
+
+            $('#inscripcion').on('submit', function (e) {
+                e.preventDefault();
+
+                var datos = {
+                    id_usuario: $(':input[name=id_usuario]').val(),
+                    id_curso: $(':input[name=id_curso]').val(),
+                    accion: $('input[name=accion]').val()
+                };
+                //console.log(datos);
+                $.post(apiUrl, datos, function (response) {
+                    if (response.status == 'OK') {
+                        $('#alertaUsuario').addClass('alert alert-success').html('<p>' + response.mensaje + '</p>').show('400');
+                    } else {
+                        $('#alertaUsuario').addClass('alert alert-danger').html('<p>' + response.mensaje + '</p>').show('400');
+                    }
+                    setTimeout(function () {
+                        $('#alertaUsuario').hide('400');
+                        $('#alertaUsuario').attr('class', '');
+                    }, 3000);
+                });
+
+                /*$.ajax({
+                 url: apiUrl,
+                 type: "POST",
+                 data: new FormData(this),
+                 contentType: false,
+                 cache: false,
+                 processData: false,
+                 dataType: 'json',
+                 success: function (response) {
+                 if (response.status == 'OK') {
+                 $('#alertaUsuario').addClass('alert-success').html('<p>' + response.mensaje + '</p>').show('400');
+                 } else {
+                 $('#alertaUsuario').addClass('alert-danger').html('<p>' + response.mensaje + '</p>').show('400');
+                 }
+                 setTimeout(function () {
+                 $('#alertaUsuario').hide('400');
+                 }, 3000);
+                 }
+                 });*/
+            });
+
+            //cargarDatos();

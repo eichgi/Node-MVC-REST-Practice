@@ -1,0 +1,20 @@
+nav.navbar.navbar-default.navbar-fixed-top.navbar-inverse
+    .container-fluid
+        .navbar-header
+            .button(type="button", class="navbar-toggle collapsed" data-toggle="collapse"
+            data-target="#bs-example-navbar-collapse-1" aria-expanded="false")
+                span.sr-only Toggle navigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a(class='navbar-brand' href="#") CRUD
+        .collapse.navbar-collapse#bs-example-navbar-collapse-1
+            ul.nav.navbar-nav
+                li
+                    a(href="/") Inicio
+                        span.sr-only (current)
+            ul.nav.navbar-nav.navbar-right
+                li
+                    a(href='/registrar') Registrar
+                li
+                    a(href='/inscribir') Inscribir curso

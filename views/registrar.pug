@@ -1,0 +1,49 @@
+doctype html
+html(lang="es")
+    head
+        include head.pug
+    body
+        include nav.pug
+        .row(style="margin-top: 5em")
+            .col-sm-10.col-sm-offset-1
+                .col-sm-6
+                    .panel.panel-default
+                        .panel-heading
+                            .panel-title
+                                h2 Registrar Usuario
+                        .panel-body
+                            form#nuevoUsuario(style="margin-bottom: 1em" method="post" action="/api")
+                                .form-group
+                                    label Nombre:
+                                    input(type="text" class="form-control" name="nombre")
+                                .form-group
+                                    label Apellido:
+                                    input(type="text" class="form-control" name="apellido")
+                                .form-group
+                                    label Edad:
+                                    input(type="text" class="form-control" name="edad")
+                                input(type="hidden" name="accion" value="registrarUsuario")
+                                button(type="submit" class="btn btn-default btn-success") Registrar usuario
+                            #alertaUsuario.alert(style="display:none",role="alert")
+                .col-sm-6
+                    .panel.panel-default
+                        .panel-heading
+                            .panel-title
+                                h2 Registrar Curso
+                        .panel-body
+                            form#nuevoCurso(style="margin-bottom: 1em" method="post" action="/api")
+                                .form-group
+                                    label Nombre:
+                                    input(type="text", class="form-control" name="nombre")
+                                .form-group
+                                    label Lenguaje:
+                                    input(type="text" class="form-control" name="lenguaje")
+                                .form-group
+                                    label Costo:
+                                    input(type="number" step="any" class="form-control" name="costo")
+                                input(type="hidden" name="accion" value="registrarCurso")
+                                button(type="submit" class="btn btn-default btn-success") Registrar curso
+                            #alertaCurso.alert(role="alert" style="display: none")
+        include foot.pug
+        script(src="js/jquery-3.1.1.js")
+        script(src="js/bootstrap.min.js")
